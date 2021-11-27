@@ -7,13 +7,8 @@
 	<title>Curso JSP</title>
 </head>
 <body>
-	<p>Hello</p>
-	
-	<%
 		
-	%>
-	
-	<form action="receber-nome.jsp">
+	<form action="ServletLogin" method="post">
 		
 		<input name="nome">
 		<input name="idade">
