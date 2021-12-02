@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.ModelLogin;
 
 /*Os servlets são Controller*/
-@WebServlet(urlPatterns = {"/ServletLogin", "/principal/ServletLogin"}) /* Mapeamento da ur que vem da tela */
+@WebServlet(urlPatterns = {"/principal/ServletLogin", "/ServletLogin"}) /* Mapeamento da ur que vem da tela */
 public class ServletLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -52,14 +52,11 @@ public class ServletLogin extends HttpServlet {
 			}
 			
 		} else {
-			RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
+			RequestDispatcher redirecionar = request.getRequestDispatcher("/index.jsp");
 			request.setAttribute("msg", "Informe o login e senha corretamente!");
 			redirecionar.forward(request, response);
 		}
-		
-		
-		
-		
+				
 	}
 
 }

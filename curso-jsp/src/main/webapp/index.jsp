@@ -33,5 +33,6 @@
 	</form>
 	
 	<h4>${msg}</h4>
+	<h4><%= request.getParameter("url") %></h4>
 </body>
 </html>
