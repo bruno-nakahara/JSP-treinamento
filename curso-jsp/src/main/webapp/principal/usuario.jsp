@@ -114,20 +114,22 @@
 			</div>
 			
 			<!-- Tabela de resultado de busca -->
-			<table class="table">
-			  <thead>
-			    <tr>
-			      <th scope="col">ID</th>
-			      <th scope="col">Nome</th>
-			      <th scope="col">Ver</th>
-			    </tr>
-			  </thead>
-			  <tbody>
-			    
-			  </tbody>
-			</table>
-			
+			<div style="height: 300px; overflow: scroll;">
+				<table class="table" id="tabelaresultado">
+				  <thead>
+				    <tr>
+				      <th scope="col">ID</th>
+				      <th scope="col">Nome</th>
+				      <th scope="col">Ver</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    
+				  </tbody>
+				</table>			
+			</div>
 	      </div>
+	      <span id="totalResultados"></span>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
 	      </div>
@@ -152,7 +154,15 @@
 						url: urlAction,
 						data: "nomeBusca=" + nomeBusca + "&acao=buscarUserAjax",
 						success: function (response) {
-							alert(response)
+							const json = JSON.parse(response);
+							
+							$("#tabelaresultado > tbody > tr").remove();
+
+							for(let p = 0; p< json.length; p++) {
+								$("#tabelaresultado > tbody").append('<tr> <td>' + json[p].id + '</td> <td>' + json[p].nome + '</td> <td> <button type="button" class="btn btn-info" data-target="#infoUsuario">Ver</button> </td> </tr>');
+
+							}
+							document.getElementById("totalResultados").textContent = 'Resultados: ' + json.length;
 						}
 					
 					}).fail(function(xhr, status, errorThrown) {
