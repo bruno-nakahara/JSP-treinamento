@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %> 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -142,6 +145,12 @@
     
     <script type="text/javascript">
 
+    	function verEditar(id) {
+    		const urlAction = document.getElementById("formUser").action;
+
+    		window.location.href = urlAction + '?acao=buscarEditar&id=' + id;
+        }
+
 	    function buscarUsuario() {
 	    	 var nomeBusca = document.getElementById("nomeBusca").value;
 
@@ -159,7 +168,7 @@
 							$("#tabelaresultado > tbody > tr").remove();
 
 							for(let p = 0; p< json.length; p++) {
-								$("#tabelaresultado > tbody").append('<tr> <td>' + json[p].id + '</td> <td>' + json[p].nome + '</td> <td> <button type="button" class="btn btn-info" data-target="#infoUsuario">Ver</button> </td> </tr>');
+								$("#tabelaresultado > tbody").append('<tr> <td>' + json[p].id + '</td> <td>' + json[p].nome + '</td> <td> <button onclick="verEditar(' + json[p].id + ')" type="button" class="btn btn-info" data-target="#infoUsuario">Ver</button> </td> </tr>');
 
 							}
 							document.getElementById("totalResultados").textContent = 'Resultados: ' + json.length;

@@ -51,6 +51,31 @@ public class DAOUsuarioRepository {
 		return this.consultaUsuario(objeto.getLogin());
 	}
 	
+public List<ModelLogin> consultaUsuarioList() throws SQLException {
+		
+		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
+		
+		String sql = "select * from model_login";//upper(?)
+		PreparedStatement statement = connection.prepareStatement(sql);
+		//statement.setString(1, "%" + nome + "%");
+		
+		ResultSet resultado = statement.executeQuery();
+		
+		while (resultado.next()) {
+			
+			ModelLogin modelLogin = new ModelLogin();
+			
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setNome(resultado.getString("nome"));
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setLogin(resultado.getString("login"));
+			
+			retorno.add(modelLogin);
+		}
+		
+		return retorno;
+	}
+	
 	public List<ModelLogin> consultaUsuarioList(String nome) throws SQLException {
 		
 		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
@@ -98,6 +123,29 @@ public class DAOUsuarioRepository {
 			
 	}
 	
+	public ModelLogin consultaUsuarioID(String id) throws SQLException {
+		
+		ModelLogin modelLogin = new ModelLogin();
+		
+		String sql = "select * from model_login where id = ?";
+		
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setLong(1, Long.parseLong(id));
+		
+		ResultSet resultado = statement.executeQuery();
+		
+		while (resultado.next()) {
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setLogin(resultado.getString("login"));
+			modelLogin.setNome(resultado.getString("nome"));
+			modelLogin.setSenha(resultado.getString("senha"));
+		}  
+		
+		return modelLogin;
+			
+	}
+	
 	public boolean validarLogin(String login) throws SQLException {
 		String sql = "select count(1) > 0 as existe from model_login where upper(login) = upper('" + login + "')";
 		
@@ -118,4 +166,6 @@ public class DAOUsuarioRepository {
 		connection.commit();
 		
 	}
+	
+	
 }

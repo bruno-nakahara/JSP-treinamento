@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.ModelLogin;
 
-@WebServlet("/ServletUsuarioController")
+@WebServlet(urlPatterns = { "/ServletUsuarioController", "/principal/usuario.jsp" })
 public class ServletUsuarioController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -57,6 +57,24 @@ public class ServletUsuarioController extends HttpServlet {
 				
 				response.getWriter().write(json);
 					
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarEditar")) {
+				String id = request.getParameter("id");
+				
+				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioID(id);
+				
+				request.setAttribute("msg", "Usuário em edição");
+				request.setAttribute("modelLogin", modelLogin);
+				
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+				
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("listarUser")) {
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+				
+				request.setAttribute("msg", "Usuários carregados");
+				request.setAttribute("modelLogins", modelLogins);
+				
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+				
 			} else {
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			}
