@@ -1,3 +1,4 @@
+<%@page import="model.ModelLogin"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     
@@ -62,6 +63,37 @@
                                                                 <label class="float-label">Email:</label>
                                                             </div>
                                                             <div class="form-group form-default form-static-label">
+                                                                <select class="form-select form-control" name="perfil">
+                                                                	<option disabled="disabled">[Selecione o Perfil]</option>
+                                                                	<option value="ADMIN" <%                                                                 	
+                                                                	ModelLogin modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+                                                                                                                              	
+                                                                	if (modelLogin != null && modelLogin.getPerfil().equals("ADMIN")) {
+                                                                		out.println(" ");
+                                                                		out.println("selected=\"selected\"");
+                                                                		out.println(" ");
+                                                                	} %>>Admin</option>                                        
+                                                                	<option value="SECRETARIA" <% 
+																	modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+                                                                                                                                	
+                                                                	if (modelLogin != null && modelLogin.getPerfil().equals("SECRETARIA")) {
+                                                                		out.println(" ");
+                                                                		out.println("selected=\"selected\"");
+                                                                		out.println(" ");
+                                                                	}%>>Secretária</option>
+                                                                	<option value="AUXILIAR" <% 
+                                                                	modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+                                                                	                                                                	
+                                                                	if (modelLogin != null && modelLogin.getPerfil().equals("AUXILIAR")) {
+                                                                		out.println(" ");
+                                                                		out.println("selected=\"selected\"");
+                                                                		out.println(" ");
+                                                                	}%>>Auxiliar</option>
+                                                                </select>
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Perfil:</label>
+                                                            </div>                                                            
+                                                            <div class="form-group form-default form-static-label">
                                                                 <input type="text" name="login" id="login" class="form-control" required="required" value="${modelLogin.login}" autocomplete="off">
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">Login:</label>
@@ -70,6 +102,12 @@
                                                                 <input type="password" name="senha" id="senha" class="form-control" required="required" value="${modelLogin.senha}" autocomplete="off">
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">Senha:</label>
+                                                            </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                            	<input id="genero" name="genero" type="radio" checked="checked">Masculino</>
+                                                            	<input id="genero" name="genero" type="radio">Feminino</>
+																																
                                                             </div>
                                                             
 															<button type="button" class="btn btn-primary waves-effect waves-light" onclick="limparForm();" >Novo</button>
