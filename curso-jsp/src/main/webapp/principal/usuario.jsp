@@ -43,7 +43,7 @@
                                                     
                                                     <div class="card-block">
                                                         <h4 class="sub-title">Formulário de cadastro</h4>
-                                                        <form id="formUser" class="form-material" action="<%= request.getContextPath() %>/ServletUsuarioController" method="post">
+                                                        <form id="formUser" enctype="multipart/form-data" class="form-material" action="<%= request.getContextPath() %>/ServletUsuarioController" method="post">
                                                             
                                                             <input type="hidden" name="acao" id="acao" value="">
                                                             
@@ -51,6 +51,13 @@
                                                                 <input type="text" name="id" id="id" class="form-control" readonly="readonly" value="${modelLogin.id}">
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">ID:</label>
+                                                            </div>
+                                                            <div class="form-group form-default input-group mb-3">                                                                
+															  <div class="input-group-prepend">
+															    <img id="fotoembase64" src="" style="width: 100px">
+															  </div>
+															  <input type="file" id="fileFoto" name="fileFoto" accept="image/*" onchange="visualizarImg('fotoembase64', 'fileFoto')" class="form-control-file">
+															    															
                                                             </div>
                                                             <div class="form-group form-default form-static-label">
                                                                 <input type="text" name="nome" id="nome" class="form-control" required="required" value="${modelLogin.nome}">
@@ -105,8 +112,24 @@
                                                             </div>
                                                             
                                                             <div class="form-group form-default form-static-label">
-                                                            	<input id="genero" name="genero" type="radio" checked="checked">Masculino</>
-                                                            	<input id="genero" name="genero" type="radio">Feminino</>
+                                                            	<input id="genero" name="sexo" type="radio" value="MASCULINO" <%
+                                                            			modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+                                                            	
+		                                                            	if (modelLogin != null && modelLogin.getSexo().equals("MASCULINO")) {
+		                                                            		out.println(" ");
+		                                                            		out.println("checked=\"checked\"");
+		                                                            		out.println(" ");
+		                                                            	}
+                                                            	%>>Masculino</>
+                                                            	<input id="genero" name="sexo" type="radio" value="FEMININO" <%
+                                                            			modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+                                                            	
+		                                                            	if (modelLogin != null && modelLogin.getSexo().equals("FEMININO")) {
+		                                                            		out.println(" ");
+		                                                            		out.println("checked=\"checked\"");
+		                                                            		out.println(" ");
+		                                                            	}
+                                                            	%>>Feminino</>
 																																
                                                             </div>
                                                             
@@ -205,6 +228,22 @@
     <jsp:include page="javascriptfile.jsp"></jsp:include>
     
     <script type="text/javascript">
+
+     	function visualizarImg(fotoembase64, filefoto) {
+			const preview = document.getElementById(fotoembase64);
+			const fileUser = document.getElementById(filefoto).files[0];
+			const reader = new FileReader();
+
+			reader.onloadend = function () {
+				preview.src = reader.result;
+			}
+
+			if (fileUser) {
+				reader.readAsDataURL(fileUser);
+			} else {
+				preview.src = '';
+			}
+        }
 
     	function verEditar(id) {
     		const urlAction = document.getElementById("formUser").action;
