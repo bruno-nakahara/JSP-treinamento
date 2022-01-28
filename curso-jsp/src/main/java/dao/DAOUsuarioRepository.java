@@ -35,6 +35,19 @@ public class DAOUsuarioRepository {
 			
 			preparedSql.execute();
 			connection.commit();
+			
+			if (objeto.getFotouser() != null && !objeto.getFotouser().isEmpty()) {
+				sql = "update model_login set fotouser = ?, extensaofotouser = ? where login = ?";
+				
+				preparedSql = connection.prepareStatement(sql);
+				
+				preparedSql.setString(1, objeto.getFotouser());
+				preparedSql.setString(2, objeto.getExtensaofotouser());
+				preparedSql.setString(3, objeto.getLogin());
+				
+				preparedSql.execute();
+				connection.commit();
+			}
 		} else {
 			String sql = "update model_login set login=?, senha=?, nome=?, email=?, perfil=?, sexo=? where id = " + objeto.getId() + ";";
 			
@@ -49,6 +62,19 @@ public class DAOUsuarioRepository {
 			
 			preparedSql.executeUpdate();
 			connection.commit();
+			
+			if (objeto.getFotouser() != null && !objeto.getFotouser().isEmpty()) {
+				sql = "update model_login set fotouser = ?, extensaofotouser = ? where id = ?";
+				
+				preparedSql = connection.prepareStatement(sql);
+				
+				preparedSql.setString(1, objeto.getFotouser());
+				preparedSql.setString(2, objeto.getExtensaofotouser());
+				preparedSql.setLong(3, objeto.getId());
+				
+				preparedSql.execute();
+				connection.commit();
+			}
 		}
 		
 		
@@ -153,6 +179,7 @@ public List<ModelLogin> consultaUsuarioList(Long userLogado) throws SQLException
 			modelLogin.setUserAdmin(resultado.getBoolean("useradmin"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
 			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setFotouser(resultado.getString("fotouser"));
 		}  
 		
 		return modelLogin;
@@ -177,6 +204,7 @@ public List<ModelLogin> consultaUsuarioList(Long userLogado) throws SQLException
 			modelLogin.setSenha(resultado.getString("senha"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
 			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setFotouser(resultado.getString("fotouser"));
 		}  
 		
 		return modelLogin;
@@ -203,6 +231,8 @@ public List<ModelLogin> consultaUsuarioList(Long userLogado) throws SQLException
 			modelLogin.setSenha(resultado.getString("senha"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
 			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setFotouser(resultado.getString("fotouser"));
+			modelLogin.setExtensaofotouser(resultado.getString("extensaofotouser"));
 		}  
 		
 		return modelLogin;
