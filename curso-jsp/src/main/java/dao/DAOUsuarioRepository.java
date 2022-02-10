@@ -21,7 +21,7 @@ public class DAOUsuarioRepository {
 	public ModelLogin gravarUsuario(ModelLogin objeto, Long userLogado) throws SQLException {
 		
 		if (objeto.isNovo()) {
-			String sql = "insert into model_login (login, senha, nome, email, usuario_id, perfil, sexo) values (?, ?, ?, ?, ?, ?, ?);";
+			String sql = "insert into model_login (login, senha, nome, email, usuario_id, perfil, sexo, cep, logradouro, bairro, localidade, uf, numero) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 			
 			PreparedStatement preparedSql = connection.prepareStatement(sql);
 			
@@ -32,6 +32,12 @@ public class DAOUsuarioRepository {
 			preparedSql.setLong(5, userLogado);
 			preparedSql.setString(6, objeto.getPerfil());
 			preparedSql.setString(7, objeto.getSexo());
+			preparedSql.setString(8, objeto.getCep());
+			preparedSql.setString(9, objeto.getLogradouro());
+			preparedSql.setString(10, objeto.getBairro());
+			preparedSql.setString(11, objeto.getLocalidade());
+			preparedSql.setString(12, objeto.getUf());
+			preparedSql.setString(13, objeto.getNumero());
 			
 			preparedSql.execute();
 			connection.commit();
@@ -49,7 +55,7 @@ public class DAOUsuarioRepository {
 				connection.commit();
 			}
 		} else {
-			String sql = "update model_login set login=?, senha=?, nome=?, email=?, perfil=?, sexo=? where id = " + objeto.getId() + ";";
+			String sql = "update model_login set login=?, senha=?, nome=?, email=?, perfil=?, sexo=?, cep=?, logradouro=?, bairro=?, localidade=?, uf=?, numero=? where id = " + objeto.getId() + ";";
 			
 			PreparedStatement preparedSql = connection.prepareStatement(sql);
 			
@@ -58,7 +64,13 @@ public class DAOUsuarioRepository {
 			preparedSql.setString(3, objeto.getNome());
 			preparedSql.setString(4, objeto.getEmail());
 			preparedSql.setString(5, objeto.getPerfil());
-			preparedSql.setString(6, objeto.getSexo());
+			preparedSql.setString(6, objeto.getSexo());	
+			preparedSql.setString(7, objeto.getCep());
+			preparedSql.setString(8, objeto.getLogradouro());
+			preparedSql.setString(9, objeto.getBairro());
+			preparedSql.setString(10, objeto.getLocalidade());
+			preparedSql.setString(11, objeto.getUf());
+			preparedSql.setString(12, objeto.getNumero());
 			
 			preparedSql.executeUpdate();
 			connection.commit();
@@ -82,11 +94,32 @@ public class DAOUsuarioRepository {
 		return this.consultaUsuario(objeto.getLogin(), userLogado);
 	}
 	
-public List<ModelLogin> consultaUsuarioList(Long userLogado) throws SQLException {
+	public int totalPagina(Long userLogado) throws SQLException {
+		String sql = "select count(1) as total from model_login where usuario_id = " + userLogado;
+		PreparedStatement statement = connection.prepareStatement(sql);
+		
+		ResultSet resultado = statement.executeQuery();
+		
+		Double cadastros = resultado.getDouble("total");
+		
+		Double porpagina = 5.0;
+		
+		Double pagina = cadastros / porpagina;
+		
+		Double resto = pagina % 2;
+		
+		if (resto > 0) {
+			pagina++;
+		}
+		
+		return pagina.intValue();
+	}
+	
+	public List<ModelLogin> consultaUsuarioListPaginada(Long userLogado, Integer offset) throws SQLException {
 		
 		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
 		
-		String sql = "select * from model_login where useradmin is false and usuario_id = " + userLogado;//upper(?)
+		String sql = "select * from model_login where useradmin is false and usuario_id = " + userLogado + " order by nome offset " + offset + " limite 5";//upper(?)
 		PreparedStatement statement = connection.prepareStatement(sql);
 		//statement.setString(1, "%" + nome + "%");
 		
@@ -109,11 +142,40 @@ public List<ModelLogin> consultaUsuarioList(Long userLogado) throws SQLException
 		return retorno;
 	}
 	
+	public List<ModelLogin> consultaUsuarioList(Long userLogado) throws SQLException {
+		
+		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
+		
+		String sql = "select * from model_login where useradmin is false and usuario_id = " + userLogado + " limite 5";//upper(?)
+		PreparedStatement statement = connection.prepareStatement(sql);
+		//statement.setString(1, "%" + nome + "%");
+		
+		ResultSet resultado = statement.executeQuery();
+		
+		while (resultado.next()) {
+			
+			ModelLogin modelLogin = new ModelLogin();
+			
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setNome(resultado.getString("nome"));
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setLogin(resultado.getString("login"));
+			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+			
+			retorno.add(modelLogin);
+		}
+		
+		return retorno;
+	}
+
+	
+	
 	public List<ModelLogin> consultaUsuarioList(String nome, Long userLogado) throws SQLException {
 		
 		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
 		
-		String sql = "select * from model_login where upper(nome) like upper('%" + nome + "%') and useradmin is false and usuario_id = " + userLogado;//upper(?)
+		String sql = "select * from model_login where upper(nome) like upper('%" + nome + "%') and useradmin is false and usuario_id = " + userLogado + " limite 5";//upper(?)
 		PreparedStatement statement = connection.prepareStatement(sql);
 		//statement.setString(1, "%" + nome + "%");
 		
@@ -179,7 +241,13 @@ public List<ModelLogin> consultaUsuarioList(Long userLogado) throws SQLException
 			modelLogin.setUserAdmin(resultado.getBoolean("useradmin"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
 			modelLogin.setSexo(resultado.getString("sexo"));
-			modelLogin.setFotouser(resultado.getString("fotouser"));
+			modelLogin.setFotouser(resultado.getString("fotouser"));			
+			modelLogin.setCep(resultado.getString("cep"));
+			modelLogin.setLogradouro(resultado.getString("logradouro"));
+			modelLogin.setBairro(resultado.getString("bairro"));
+			modelLogin.setLocalidade(resultado.getString("localidade"));
+			modelLogin.setUf(resultado.getString("uf"));
+			modelLogin.setNumero(resultado.getString("numero"));
 		}  
 		
 		return modelLogin;
@@ -205,6 +273,12 @@ public List<ModelLogin> consultaUsuarioList(Long userLogado) throws SQLException
 			modelLogin.setPerfil(resultado.getString("perfil"));
 			modelLogin.setSexo(resultado.getString("sexo"));
 			modelLogin.setFotouser(resultado.getString("fotouser"));
+			modelLogin.setCep(resultado.getString("cep"));
+			modelLogin.setLogradouro(resultado.getString("logradouro"));
+			modelLogin.setBairro(resultado.getString("bairro"));
+			modelLogin.setLocalidade(resultado.getString("localidade"));
+			modelLogin.setUf(resultado.getString("uf"));
+			modelLogin.setNumero(resultado.getString("numero"));
 		}  
 		
 		return modelLogin;
@@ -233,6 +307,12 @@ public List<ModelLogin> consultaUsuarioList(Long userLogado) throws SQLException
 			modelLogin.setSexo(resultado.getString("sexo"));
 			modelLogin.setFotouser(resultado.getString("fotouser"));
 			modelLogin.setExtensaofotouser(resultado.getString("extensaofotouser"));
+			modelLogin.setCep(resultado.getString("cep"));
+			modelLogin.setLogradouro(resultado.getString("logradouro"));
+			modelLogin.setBairro(resultado.getString("bairro"));
+			modelLogin.setLocalidade(resultado.getString("localidade"));
+			modelLogin.setUf(resultado.getString("uf"));
+			modelLogin.setNumero(resultado.getString("numero"));
 		}  
 		
 		return modelLogin;
